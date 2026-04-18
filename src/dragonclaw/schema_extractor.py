@@ -13,6 +13,17 @@ from dragonclaw.models import SchemaDocument, SchemaField, SchemaMetadata
 ZOD_FIELD_RE = re.compile(r"^\s*([A-Za-z_][A-Za-z0-9_\-]*)\s*:\s*z\.")
 
 
+def _normalize_json_schema_type(raw: Any) -> str:
+    """JSON Schema allows `type` as a string or a list of strings (union)."""
+    if raw is None:
+        return "unknown"
+    if isinstance(raw, str):
+        return raw
+    if isinstance(raw, list):
+        return "|".join(str(x) for x in raw) if raw else "unknown"
+    return str(raw)
+
+
 def _hash_source(root: Path) -> str:
     digest = hashlib.sha256()
     for path in sorted(p for p in root.rglob("*") if p.is_file()):
@@ -27,7 +38,8 @@ def _flatten_json_schema(node: dict[str, Any], prefix: str = "") -> list[SchemaF
     fields: list[SchemaField] = []
     for key, spec in props.items():
         full_key = f"{prefix}.{key}" if prefix else key
-        field_type = spec.get("type", "unknown")
+        raw_type = spec.get("type")
+        field_type = _normalize_json_schema_type(raw_type)
         enum_values = [str(v) for v in spec.get("enum", [])]
         default = spec.get("default")
         fields.append(
@@ -40,7 +52,8 @@ def _flatten_json_schema(node: dict[str, Any], prefix: str = "") -> list[SchemaF
                 constraints={k: v for k, v in spec.items() if k not in {"type", "enum", "default", "properties", "required"}},
             )
         )
-        if field_type == "object":
+        # Nested objects: recurse whenever `properties` is present (type may be a union like ["string","object"]).
+        if spec.get("properties"):
             fields.extend(_flatten_json_schema(spec, full_key))
     return fields
 
@@ -63,6 +76,9 @@ def extract_schema(source_path: Path, oc_version: str) -> SchemaDocument:
     else:
         seen: set[str] = set()
         for path in source_path.rglob("*.ts"):
+            # rglob("*.ts") can match directory names ending in .ts (e.g. test fixture folders).
+            if not path.is_file():
+                continue
             for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
                 match = ZOD_FIELD_RE.match(line)
                 if not match:
