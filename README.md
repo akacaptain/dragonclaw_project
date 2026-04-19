@@ -49,5 +49,5 @@ Artifacts are written to `artifacts/` and packaged output to `dist/release/`.
 
 ## Notes
 
-- Fine-tuning execution is disabled by default (`--dry-run`) to keep local dev fast and safe.
+- Fine-tuning execution is disabled by default (`--dry-run`) to keep local dev fast and safe. Run real training with **`--no-dry-run`**.
 - Real training requires `.[train]` dependencies and GPU-ready environment setup.

@@ -21,6 +21,7 @@ train = [
   "transformers>=4.41",
   "datasets>=2.20",
   "peft>=0.11",
+  "accelerate>=0.30",
 ]
 dev = [
   "pytest>=8.2",

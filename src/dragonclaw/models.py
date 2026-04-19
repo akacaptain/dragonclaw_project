@@ -48,6 +48,16 @@ class TrainConfig(BaseModel):
     lora_dropout: float = 0.05
     backend: Literal["hf-peft", "unsloth"] = "hf-peft"
     dry_run: bool = True
+    # HF Trainer / LoRA run (ignored when dry_run=True)
+    num_train_epochs: float = 1.0
+    per_device_train_batch_size: int = 2
+    gradient_accumulation_steps: int = 4
+    learning_rate: float = 2e-4
+    max_seq_length: int = 2048
+    warmup_ratio: float = 0.03
+    logging_steps: int = 10
+    save_steps: int = 200
+    seed: int = 42
 
 
 class ValidationCaseResult(BaseModel):

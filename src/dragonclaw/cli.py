@@ -51,7 +51,18 @@ def fine_tune_cmd(
     output_dir: Path = Path("artifacts/model"),
     base_model: str = "meta-llama/Llama-3.2-3B-Instruct",
     backend: str = "hf-peft",
-    dry_run: bool = True,
+    dry_run: bool = typer.Option(
+        True,
+        help="Default: only check deps and dataset. Use --no-dry-run to run the backend.",
+    ),
+    num_train_epochs: float = 1.0,
+    per_device_train_batch_size: int = 2,
+    gradient_accumulation_steps: int = 4,
+    learning_rate: float = 2e-4,
+    max_seq_length: int = 2048,
+    logging_steps: int = 10,
+    save_steps: int = 200,
+    seed: int = 42,
 ) -> None:
     config = TrainConfig(
         base_model=base_model,
@@ -59,6 +70,14 @@ def fine_tune_cmd(
         output_dir=str(output_dir),
         backend=backend,  # type: ignore[arg-type]
         dry_run=dry_run,
+        num_train_epochs=num_train_epochs,
+        per_device_train_batch_size=per_device_train_batch_size,
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        learning_rate=learning_rate,
+        max_seq_length=max_seq_length,
+        logging_steps=logging_steps,
+        save_steps=save_steps,
+        seed=seed,
     )
     result = run_fine_tune(config)
     console.print(f"[green]Fine-tune stage[/green]: {result}")
@@ -103,7 +122,10 @@ def all_cmd(
     source_path: Path,
     oc_version: str,
     artifacts_dir: Path = Path("artifacts"),
-    dry_run: bool = True,
+    dry_run: bool = typer.Option(
+        True,
+        help="Default: fine-tune stage is dry-run only. Use --no-dry-run for real training.",
+    ),
 ) -> None:
     schema_path = artifacts_dir / "schema.json"
     data_path = artifacts_dir / "training_data.jsonl"
