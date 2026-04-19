@@ -42,8 +42,10 @@ dragonclaw-spec.md
 !.env.example
 *.pem
 
-# Pipeline & model artifacts (regenerate locally)
-artifacts/
+# Pipeline artifacts: schema + training_data.jsonl are tracked for clone-and-train workflows.
+# Model checkpoints and local validation output stay out of git.
+artifacts/model/
+artifacts/validation_report.json
 models/
 *.gguf
 *.ggml
