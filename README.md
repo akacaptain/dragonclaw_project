@@ -51,3 +51,7 @@ Artifacts are written to `artifacts/` and packaged output to `dist/release/`.
 
 - Fine-tuning execution is disabled by default (`--dry-run`) to keep local dev fast and safe. Run real training with **`--no-dry-run`**.
 - Real training requires `.[train]` dependencies and GPU-ready environment setup.
+
+## Hugging Face releases (adapters + tokenizer)
+
+If you publish a LoRA adapter to Hugging Face, see `docs/huggingface_release.md` for a practical upload checklist and a `pip list --format=freeze` workflow.
