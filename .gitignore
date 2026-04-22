@@ -69,3 +69,6 @@ models/
 
 # Cursor (optional local state; uncomment if you prefer not to commit)
 # .cursor/
+
+# Local Hugging Face export folder (used by `docs/huggingface_release.md` examples)
+hf_tokenizer_export/
