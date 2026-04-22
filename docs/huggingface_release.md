@@ -51,6 +51,14 @@ print("Uploaded tokenizer files to", adapter_repo)
 PY
 ```
 
+Cleanup (optional but recommended):
+
+```bash
+rm -rf hf_tokenizer_export
+```
+
+`hf_tokenizer_export/` is a local throwaway folder; it is listed in `.gitignore` so it is less likely to be committed accidentally.
+
 Sanity check (should work after the upload):
 
 ```python
