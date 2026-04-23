@@ -55,3 +55,5 @@ Artifacts are written to `artifacts/` and packaged output to `dist/release/`.
 ## Hugging Face releases (adapters + tokenizer)
 
 If you publish a LoRA adapter to Hugging Face, see `docs/huggingface_release.md` for a practical upload checklist and a `pip list --format=freeze` workflow.
+
+A ready-to-copy model card template lives in `docs/huggingface_model_card.md`.
