@@ -47,6 +47,59 @@ dragonclaw-build all /path/to/openclaw/source 2026.4.12 --dry-run
 
 Artifacts are written to `artifacts/` and packaged output to `dist/release/`.
 
+## Runtime workspace commands
+
+Use `dragonclaw` (runtime CLI) to mutate or verify an actual OpenClaw workspace. These are runtime-facing helpers that the chat assistant can call under the hood.
+
+```bash
+dragonclaw --help
+```
+
+## Applying complete OpenClaw config files
+
+1. Extract schema and discover config file references from OpenClaw source:
+
+```bash
+dragonclaw-build extract-schema /path/to/openclaw/source --oc-version 2026.4.12
+```
+
+2. Create `artifacts/config_plan.json` with file-relative JSON patches:
+
+```json
+{
+  "openclaw.json": {
+    "provider": "openai"
+  },
+  "auth/profiles/default.json": {
+    "name": "default",
+    "token": "replace-me"
+  }
+}
+```
+
+3. Preview and apply:
+
+```bash
+dragonclaw apply-config /path/to/openclaw/workspace --dry-run
+dragonclaw apply-config /path/to/openclaw/workspace --no-dry-run
+```
+
+`apply-config` merges with existing JSON objects and writes `.bak` files before overwriting by default.
+
+4. Verify discovered surface against a real workspace:
+
+```bash
+dragonclaw verify-config-surface /path/to/openclaw/workspace
+```
+
+This reports expected files present, missing expected files, and extra JSON files in the workspace.
+
+For CI-style gating, use:
+
+```bash
+dragonclaw verify-config-surface /path/to/openclaw/workspace --fail-on-missing --fail-on-extra
+```
+
 ## Notes
 
 - Fine-tuning execution is disabled by default (`--dry-run`) to keep local dev fast and safe. Run real training with **`--no-dry-run`**.

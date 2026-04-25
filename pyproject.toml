@@ -29,6 +29,7 @@ dev = [
 
 [project.scripts]
 dragonclaw-build = "dragonclaw.cli:app"
+dragonclaw = "dragonclaw.runtime_cli:app"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

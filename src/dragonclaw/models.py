@@ -32,6 +32,17 @@ class SchemaDocument(BaseModel):
         return {f.key: f for f in self.fields}
 
 
+class ConfigFileTarget(BaseModel):
+    path: str
+    discovered_from: str = "default"
+    required: bool = False
+
+
+class ConfigSurface(BaseModel):
+    metadata: SchemaMetadata
+    files: list[ConfigFileTarget] = Field(default_factory=list)
+
+
 class TrainingSample(BaseModel):
     category: Literal["install", "configure", "diagnose", "conversation", "adversarial"]
     prompt: str

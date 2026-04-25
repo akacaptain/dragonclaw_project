@@ -8,6 +8,7 @@ from typing import Optional
 import typer
 from rich.console import Console
 
+from dragonclaw.config_surface import discover_config_surface, save_config_surface
 from dragonclaw.evaluation import validate_samples
 from dragonclaw.fine_tune import run_fine_tune
 from dragonclaw.io_utils import (
@@ -27,10 +28,18 @@ console = Console()
 
 
 @app.command("extract-schema")
-def extract_schema_cmd(source_path: Path, output: Path = Path("artifacts/schema.json"), oc_version: str = "unknown") -> None:
+def extract_schema_cmd(
+    source_path: Path,
+    output: Path = Path("artifacts/schema.json"),
+    oc_version: str = "unknown",
+    config_output: Path = Path("artifacts/config_surface.json"),
+) -> None:
     schema = extract_schema(source_path=source_path, oc_version=oc_version)
     save_schema(schema, output)
+    surface = discover_config_surface(source_path=source_path, oc_version=oc_version)
+    save_config_surface(surface, config_output)
     console.print(f"[green]Schema extracted[/green]: {output} ({len(schema.fields)} fields)")
+    console.print(f"[green]Config surface discovered[/green]: {config_output} ({len(surface.files)} files)")
 
 
 @app.command("generate-training")
