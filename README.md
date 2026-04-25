@@ -47,15 +47,27 @@ dragonclaw-build all /path/to/openclaw/source 2026.4.12 --dry-run
 
 Artifacts are written to `artifacts/` and packaged output to `dist/release/`.
 
-## Runtime workspace commands
+## User runtime (chat-first)
 
-Use `dragonclaw` (runtime CLI) to mutate or verify an actual OpenClaw workspace. These are runtime-facing helpers that the chat assistant can call under the hood.
+For end users, the runtime flow is:
 
 ```bash
-dragonclaw --help
+# from your OpenClaw workspace
+dragonclaw --no-dry-run
 ```
 
-## Applying complete OpenClaw config files
+This starts an interactive chat session. Tell DragonClaw what you want changed; it validates and applies config updates.
+DragonClaw auto-detects the workspace from the current directory (walking up parent directories). If detection fails, it prompts for a workspace path.
+
+Session context is persisted per workspace and session id (default: `default`), so follow-up turns can inherit context like the last target file.
+
+```bash
+dragonclaw --session-id my-session --no-dry-run
+```
+
+Developer-only helper commands still exist under `dragonclaw` for debugging, but they are intentionally hidden from primary UX docs.
+
+## Developer notes: applying complete OpenClaw config files
 
 1. Extract schema and discover config file references from OpenClaw source:
 
